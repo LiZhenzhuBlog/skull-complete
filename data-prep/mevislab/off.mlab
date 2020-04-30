@@ -1,5 +1,4 @@
 // MDL v1 utf8
-mevislabVersion = 3.2
 network  {
   watchlist = ""
 }
@@ -59,17 +58,15 @@ module SoWEMRenderer {
     faceSpecularColor = "0.0666669979691505 0.0666669979691505 0.0666669979691505"
     faceAlphaValue = 1
     faceShininessValue = 1
-    primitiveValueLists = LUT
+    primitiveValueLists = ""
     selectedPrimitiveValueList = LUT
     selectedPrimitiveValueAlphaList = LUT
     primitiveValueListValid = TRUE
     primitiveValueListAlphaValid = TRUE
     overwriteAlphaWithPVL = FALSE
     wemPatchToRender = -1
-    maxWEMPatchIndex = 0
-    cachePatches = FALSE
+    maxWEMPatchIndex = -1
     sendAdjacency = FALSE
-    hitModifierKey = AllModifiersMask
     selectedTab = 1
   }
 }
@@ -94,7 +91,7 @@ module WEMLoad {
     label = ""
     description = ""
     shouldComputeNormals = FALSE
-    filename = "/Users/shinaushin/Documents/MATLAB/JHU/Spring 2020/Research/skull-complete/data-prep/matlab-scripts/STL/skull/skull_T1w_199453_hires.stl"
+    filename = $(NETWORK)/skull-stl-sample/skull_T1w_hires100307.stl
     mirrorFaces = FALSE
     generateEdges = TRUE
     triangulateFaces = FALSE
@@ -124,6 +121,7 @@ module SoExaminerViewer {
     transparency = BLEND
     antialiasing = FALSE
     antialiasingNumPasses = 1
+    hiResRendering = TRUE
     useSampleBuffers = FALSE
     numSamples = 8
     grabKeyFocus = TRUE
@@ -162,7 +160,7 @@ module SoExaminerViewer {
     stereoOffset = 3
     height = 0.78539819
     position = "-69.8859558105469 358.455352783203 -36.3294258117676"
-    orientation = "0.15656054019928 0.751566827297211 0.640808939933777 3.66782879829407"
+    orientation = "0.156560555100441 0.751566708087921 0.640809118747711 3.66782879829407"
     nearDistance = 230.88086
     farDistance = 532.86652
     focalDistance = 367.00702
@@ -209,7 +207,7 @@ module WEMSave {
     listenToFinishingNotifications = FALSE
     listenToRepaintNotifications = FALSE
     listenToSelectionChangedNotifications = FALSE
-    filename = "/Users/shinaushin/Documents/MATLAB/JHU/Spring 2020/Research/skull-complete/data-prep/matlab-scripts/voxelize/skull/199453"
+    filename = $(NETWORK)/100307
     fileType = "Object File Format (.off)"
     inWEMValid = TRUE
     status = "Valid WEM connected"
@@ -293,54 +291,18 @@ CTX = ctx # ctx is the network's context, not RunPythonScript's"
 import os
 import re
 
-file_list=os.listdir('/Users/shinaushin/Documents/MATLAB/JHU/Spring 2020/Research/skull-complete/data-prep/matlab-scripts/STL/skull')
+file_list=os.listdir('C:/Users/anari/Documents/voxelize/skull-stl-sample')
 
 for f in file_list:
-    
-    if f[1] == 'k':
-        print(f)
+	ctx.field("WEMLoad.filename").value = 'C:/Users/anari/Documents/voxelize/skull-stl-sample/' + f
 
-        ctx.field("WEMLoad.filename").value = '/Users/shinaushin/Documents/MATLAB/JHU/Spring 2020/Research/skull-complete/data-prep/matlab-scripts/STL/skull/' + f
+	n_raw = re.match("skull_T1w_hires([0-9]*).*\", f)
 
-        n_raw = re.match("skull_T1w_([0-9]*)_hires.*\", f)
+	n=n_raw.group(1)
 
-        n=n_raw.group(1)
+	ctx.field("WEMSave.filename").value = "C:/Users/anari/Documents/voxelize/" + n
 
-        ctx.field("WEMSave.filename").value = "/Users/shinaushin/Documents/MATLAB/JHU/Spring 2020/Research/skull-complete/data-prep/matlab-scripts/voxelize/skull/" + n
-
-        ctx.field("WEMSave.apply").touch()
-
-file_list=os.listdir('/Users/shinaushin/Documents/MATLAB/JHU/Spring 2020/Research/skull-complete/data-prep/matlab-scripts/STL/scalp')
-
-for f in file_list:
-    if f[1] == 'c':
-        print(f)
-        
-        ctx.field("WEMLoad.filename").value = '/Users/shinaushin/Documents/MATLAB/JHU/Spring 2020/Research/skull-complete/data-prep/matlab-scripts/STL/scalp/' + f
-
-        n_raw = re.match("scalp_T1w_([0-9]*)_hires.*\", f)
-
-        n=n_raw.group(1)
-
-        ctx.field("WEMSave.filename").value = "/Users/shinaushin/Documents/MATLAB/JHU/Spring 2020/Research/skull-complete/data-prep/matlab-scripts/voxelize/scalp/" + n
-
-        ctx.field("WEMSave.apply").touch()
-
-file_list=os.listdir('/Users/shinaushin/Documents/MATLAB/JHU/Spring 2020/Research/skull-complete/data-prep/matlab-scripts/STL/brain')
-
-for f in file_list:
-    if f[0] == 'b':
-        print(f)
-        
-        ctx.field("WEMLoad.filename").value = '/Users/shinaushin/Documents/MATLAB/JHU/Spring 2020/Research/skull-complete/data-prep/matlab-scripts/STL/brain/' + f
-
-        n_raw = re.match("brain_T1w_([0-9]*)_hires.*\", f)
-
-        n=n_raw.group(1)
-
-        ctx.field("WEMSave.filename").value = "/Users/shinaushin/Documents/MATLAB/JHU/Spring 2020/Research/skull-complete/data-prep/matlab-scripts/voxelize/brain/" + n
-
-        ctx.field("WEMSave.apply").touch()*"
+	ctx.field("WEMSave.apply").touch()*"
     finalizeCode = ""
     showFields = FALSE
     showInitCode = FALSE

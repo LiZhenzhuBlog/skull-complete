@@ -1,50 +1,88 @@
-function off_to_mat(off_path, data_path, volume_size, pad_size)
+function off_to_mat(off_path, data_path, volume_size, total_size)
 
 % Put the mesh object in a volume grid and save the volumetric
 % represenation file.
 % off_path: root off data folder
 % data_path: destination volumetric data folder
 
-phases = {'train', 'test'};
-data_size = pad_size * 2 + volume_size;
+% total_size = pad_size * 2 + volume_size;
 
-dest_path = [data_path '\' num2str(data_size)];   
+types = ["scalp"; "skull"; "brain"];
+
+dest_path = strcat(data_path, '/', types(1), '_MATs'); % '/' num2str(data_size)];   
 
 if ~exist(dest_path, 'dir')
     mkdir(dest_path);
 end     
 
 % for train and test phases
-for t = 1 : numel(phases)
-    
-    phase = phases{t};
-    off_list = [off_path '\' phase];
+off_list = strcat(off_path, '/', types(1), '/');
 
-    dest_tsdf_path = [dest_path '\' phase];
-          
-    if ~exist(dest_tsdf_path, 'dir')
-        mkdir(dest_tsdf_path);
-    end
+dest_tsdf_path = strcat(dest_path, '/');
+
+if ~exist(dest_tsdf_path, 'dir')
+    mkdir(dest_tsdf_path);
+end
+
+files = dir(fullfile(off_list, '*.off'));
+ 
+for i = 1 : length(files)
     
-    files = dir(fullfile(off_list, '*.off')); 
+    max_dims = [0,0,0];
     
-    for i = 1 : length(files) 
+    for j = 1 : 3
+        dest_path = strcat(data_path, '/', types(j), '_MATs'); % '/' num2str(data_size)];   
+
+        if ~exist(dest_path, 'dir')
+            mkdir(dest_path);
+        end     
+
+        % for train and test phases
+        off_list = strcat(off_path, '/', types(j), '/');
+
+        dest_tsdf_path = strcat(dest_path, '/');
+
+        if ~exist(dest_tsdf_path, 'dir')
+            mkdir(dest_tsdf_path);
+        end
+
+        files = dir(fullfile(off_list, '*.off'));
 
         %strcmp = string compare - para assegurar que sao os ficheiros certos
         if strcmp(files(i).name, '.') || strcmp(files(i).name, '..') || files(i).isdir == 1 || ~strcmp(files(i).name(end-2:end), 'off')
             continue;
         end           
-        filename = [off_list '\' files(i).name];
-        
-        
-        destname = [dest_tsdf_path '\' files(i).name(1:end-4) '.mat'];
-        
+        filename = strcat(off_list, '/', files(i).name);
+
+        destname = strcat(dest_tsdf_path, '/', files(i).name(1:end-4), '.mat');
+
         off_data = off_loader(filename);
-        instance = polygon2voxel(off_data, [volume_size, volume_size, volume_size], 'auto');
-        instance = padarray(instance, [pad_size, pad_size, pad_size]);
+        lengths = max(off_data.vertices) - min(off_data.vertices);
+        max_dims = [max(max_dims(1),lengths(1)), max(max_dims(2),lengths(2)), max(max_dims(3),lengths(3))];
+        ratio = lengths ./ max_dims;
+        
+        if mod(floor(volume_size*ratio(1)),2) == 1
+            x = floor(volume_size*ratio(1))-1;
+        else
+            x = floor(volume_size*ratio(1));
+        end
+        
+        if mod(floor(volume_size*ratio(2)),2) == 1
+            y = floor(volume_size*ratio(2))-1;
+        else
+            y = floor(volume_size*ratio(2));
+        end
+        
+        if mod(floor(volume_size*ratio(3)),2) == 1
+            z = floor(volume_size*ratio(3))-1;
+        else
+            z = floor(volume_size*ratio(3));
+        end
+        
+        instance = polygon2voxel(off_data, [x, y, z], 'auto');
+        instance = padarray(instance, [(total_size-x)/2, (total_size-y)/2, (total_size-z)/2]); % pad_size
         instance = int8(instance);
         save(destname, 'instance');
-        
     end
 end
 

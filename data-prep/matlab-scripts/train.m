@@ -1,6 +1,6 @@
-data_path='F:\MAT\data-workflow\skull-mat\30\train';
+data_path='/Users/shinaushin/Documents/MATLAB/JHU/Spring 2020/Research/skull-complete/data-prep/matlab-scripts/MATs/30';
 
-dest_path='F:\MAT\data-workflow\skull-mat\30\data';
+dest_path='/Users/shinaushin/Documents/MATLAB/JHU/Spring 2020/Research/skull-complete/data-prep/matlab-scripts/MATs';
 
 mat_files=dir(fullfile(data_path, '*.mat'));
 
@@ -14,10 +14,10 @@ for i=1 : length(mat_files)
 
 	load(filename);
 
-	%dataset(i, :,:,:) = defected;
+	dataset(i, :,:,:) = defected;
 
 	labels(i,:,:,:) = instance;
 	
-	destname = [dest_path '\train_data.mat'];
+	destname = [dest_path '/data30.mat'];
 	save(destname, 'dataset', 'labels');
 end
