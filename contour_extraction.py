@@ -1,9 +1,3 @@
-from fastai import *
-from fastai.vision import *
-from fastai.utils.ipython import *
-from fastai.metrics import *
-from fastai.callbacks.tracker import SaveModelCallback
-
 # %matplotlib inline
 import matplotlib.image as mpimg
 import matplotlib.pyplot as plt
