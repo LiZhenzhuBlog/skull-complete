@@ -1,3 +1,4 @@
 .DS_Store
 post-processing/*.p
 post-processing/*.npy
+defect-contour-learning/*.npy

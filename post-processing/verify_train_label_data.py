@@ -80,10 +80,8 @@ def plot_labels_random(mats):
     mat.shape = (120,120,120)
     mat2pcd4contour(mat)
 
-# train = pickle.load( open( "train120_end.p", "rb" ) )
-labels = pickle.load( open( "labels120_final.p", "rb" ) )
-# train = np.asarray(train)
-labels = np.asarray(labels)
+# train = np.load( "train120_end.p", "rb" )
+labels = np.load( "../trainer/test_y.npy")
 print(labels.shape)
 
 # plot_train_random(train)
