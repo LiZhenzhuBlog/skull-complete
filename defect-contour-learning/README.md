@@ -1,9 +1,3 @@
-ACE_model.pt - run with net.py, softmax layer at end, loss = ~0.4
-
-ACE_model2.pt - run with net2.py, ReLU layer at end, loss = ~0.8
-
-^^ adapted models probably are not deep enough to learn labels
-
 ACE_model_UNet.pt - run with UNet_3d.py, SGD lr=0.07 momentum=0.9, loss =~0.25
 
 [[9.46282178e-01 5.53002060e-04 2.21297690e-04]
@@ -17,3 +11,13 @@ ACE_model_UNet2.pt - run with UNet_3d.py, Adam lr=0.001 weight_decay=0.0002, los
  [1.24871512e-01 2.92815388e-02 9.06302558e-01]]
 
 ^^ UNet needs more training, interested to see with 10,000 iters
+
+___
+
+ARCHIVE
+
+ACE_model.pt - run with net.py, softmax layer at end, loss = ~0.4
+
+ACE_model2.pt - run with net2.py, ReLU layer at end, loss = ~0.8
+
+^^ adapted models probably are not deep enough to learn labels
